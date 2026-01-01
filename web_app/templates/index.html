@@ -1,0 +1,527 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Multi-Agent Content System</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        header {
+            text-align: center;
+            color: white;
+            margin-bottom: 40px;
+        }
+        
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+        }
+        
+        .subtitle {
+            font-size: 1.1rem;
+            opacity: 0.9;
+        }
+        
+        .tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+        
+        .tab {
+            padding: 12px 24px;
+            background: rgba(255, 255, 255, 0.2);
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            color: white;
+            cursor: pointer;
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: all 0.3s;
+        }
+        
+        .tab:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: translateY(-2px);
+        }
+        
+        .tab.active {
+            background: white;
+            color: #667eea;
+            border-color: white;
+        }
+        
+        .content-card {
+            background: white;
+            border-radius: 12px;
+            padding: 30px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+            display: none;
+        }
+        
+        .content-card.active {
+            display: block;
+            animation: fadeIn 0.3s;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .page-title {
+            color: #667eea;
+            font-size: 1.8rem;
+            margin-bottom: 20px;
+            border-bottom: 3px solid #667eea;
+            padding-bottom: 10px;
+        }
+        
+        .faq-item {
+            margin-bottom: 25px;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 8px;
+            border-left: 4px solid #667eea;
+        }
+        
+        .faq-category {
+            display: inline-block;
+            padding: 4px 12px;
+            background: #667eea;
+            color: white;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            margin-bottom: 10px;
+        }
+        
+        .faq-question {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 10px;
+        }
+        
+        .faq-answer {
+            color: #555;
+            line-height: 1.6;
+        }
+        
+        .spec-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin: 20px 0;
+        }
+        
+        .spec-item {
+            padding: 15px;
+            background: #f8f9fa;
+            border-radius: 8px;
+        }
+        
+        .spec-label {
+            font-weight: 600;
+            color: #667eea;
+            margin-bottom: 5px;
+        }
+        
+        .spec-value {
+            color: #333;
+        }
+        
+        .description {
+            line-height: 1.8;
+            color: #555;
+            margin: 20px 0;
+            white-space: pre-line;
+        }
+        
+        .comparison-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin: 20px 0;
+        }
+        
+        .product-card {
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 8px;
+            border: 2px solid #667eea;
+        }
+        
+        .product-name {
+            font-size: 1.3rem;
+            font-weight: 600;
+            color: #667eea;
+            margin-bottom: 15px;
+        }
+        
+        .product-detail {
+            margin-bottom: 10px;
+            padding: 8px;
+            background: white;
+            border-radius: 4px;
+        }
+        
+        .detail-label {
+            font-weight: 600;
+            color: #333;
+        }
+        
+        .comparison-analysis {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 8px;
+            margin-top: 20px;
+            line-height: 1.8;
+            color: #555;
+            white-space: pre-line;
+        }
+        
+        .download-btn {
+            display: inline-block;
+            padding: 10px 20px;
+            background: #667eea;
+            color: white;
+            text-decoration: none;
+            border-radius: 6px;
+            margin-right: 10px;
+            margin-top: 10px;
+            cursor: pointer;
+            border: none;
+            font-size: 1rem;
+            transition: all 0.3s;
+        }
+        
+        .download-btn:hover {
+            background: #5568d3;
+            transform: translateY(-2px);
+        }
+        
+        .question-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+        }
+        
+        .question-item {
+            padding: 15px;
+            background: #f8f9fa;
+            border-radius: 8px;
+            border-left: 3px solid #667eea;
+        }
+        
+        .question-number {
+            font-weight: 600;
+            color: #667eea;
+            margin-bottom: 5px;
+        }
+        
+        .question-text {
+            color: #333;
+            line-height: 1.4;
+        }
+        
+        .loading {
+            text-align: center;
+            padding: 40px;
+            color: #667eea;
+            font-size: 1.2rem;
+        }
+        
+        .error {
+            background: #ff4444;
+            color: white;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+        }
+        
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 1.8rem;
+            }
+            
+            .comparison-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .spec-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🤖 Multi-Agent Content Generation System</h1>
+            <p class="subtitle">Powered by Ollama Llama 3.2 | Kasparro Assignment</p>
+        </header>
+
+        <div class="tabs">
+            <button class="tab active" onclick="showTab('faq')">📋 FAQ Page</button>
+            <button class="tab" onclick="showTab('product')">📦 Product Page</button>
+            <button class="tab" onclick="showTab('comparison')">⚖️ Comparison Page</button>
+            <button class="tab" onclick="showTab('questions')">❓ All Questions</button>
+        </div>
+
+        <!-- FAQ Tab -->
+        <div id="faq" class="content-card active">
+            <h2 class="page-title">Frequently Asked Questions</h2>
+            <div id="faq-content" class="loading">Loading...</div>
+            <button class="download-btn" onclick="downloadJSON('faq')">⬇️ Download FAQ JSON</button>
+        </div>
+
+        <!-- Product Tab -->
+        <div id="product" class="content-card">
+            <h2 class="page-title">Product Description</h2>
+            <div id="product-content" class="loading">Loading...</div>
+            <button class="download-btn" onclick="downloadJSON('product')">⬇️ Download Product JSON</button>
+        </div>
+
+        <!-- Comparison Tab -->
+        <div id="comparison" class="content-card">
+            <h2 class="page-title">Product Comparison</h2>
+            <div id="comparison-content" class="loading">Loading...</div>
+            <button class="download-btn" onclick="downloadJSON('comparison')">⬇️ Download Comparison JSON</button>
+        </div>
+
+        <!-- Questions Tab -->
+        <div id="questions" class="content-card">
+            <h2 class="page-title">All Generated Questions (15 Total)</h2>
+            <div id="questions-content" class="loading">Loading...</div>
+            <button class="download-btn" onclick="downloadJSON('questions')">⬇️ Download Questions JSON</button>
+        </div>
+    </div>
+
+    <script>
+        let globalData = null;
+
+        // Fetch data on load
+        window.addEventListener('DOMContentLoaded', function() {
+            fetch('/api/data')
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        globalData = data;
+                        renderFAQ(data.faq);
+                        renderProduct(data.product);
+                        renderComparison(data.comparison);
+                        renderQuestions(data.questions);
+                    } else {
+                        showError(data.error);
+                    }
+                })
+                .catch(error => {
+                    showError('Failed to load data. Make sure you ran main.py first!');
+                });
+        });
+
+        function showTab(tabName) {
+            // Hide all tabs
+            document.querySelectorAll('.content-card').forEach(card => {
+                card.classList.remove('active');
+            });
+            document.querySelectorAll('.tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+
+            // Show selected tab
+            document.getElementById(tabName).classList.add('active');
+            event.target.classList.add('active');
+        }
+
+        function renderFAQ(faq) {
+            const content = document.getElementById('faq-content');
+            let html = '';
+
+            faq.questions.forEach(item => {
+                html += `
+                    <div class="faq-item">
+                        <span class="faq-category">${item.category}</span>
+                        <div class="faq-question">${item.question}</div>
+                        <div class="faq-answer">${item.answer}</div>
+                    </div>
+                `;
+            });
+
+            content.innerHTML = html;
+        }
+
+        function renderProduct(product) {
+            const content = document.getElementById('product-content');
+            const specs = product.specifications;
+
+            let html = `
+                <h3 style="color: #333; margin-bottom: 15px;">${product.title}</h3>
+                <div class="description">${product.description}</div>
+                
+                <h4 style="color: #667eea; margin-top: 30px; margin-bottom: 15px;">Product Specifications</h4>
+                <div class="spec-grid">
+                    <div class="spec-item">
+                        <div class="spec-label">Concentration</div>
+                        <div class="spec-value">${specs.concentration}</div>
+                    </div>
+                    <div class="spec-item">
+                        <div class="spec-label">Skin Type</div>
+                        <div class="spec-value">${specs.skin_type}</div>
+                    </div>
+                    <div class="spec-item">
+                        <div class="spec-label">Key Ingredients</div>
+                        <div class="spec-value">${specs.key_ingredients}</div>
+                    </div>
+                    <div class="spec-item">
+                        <div class="spec-label">Benefits</div>
+                        <div class="spec-value">${specs.benefits}</div>
+                    </div>
+                    <div class="spec-item">
+                        <div class="spec-label">Usage</div>
+                        <div class="spec-value">${specs.usage}</div>
+                    </div>
+                    <div class="spec-item">
+                        <div class="spec-label">Side Effects</div>
+                        <div class="spec-value">${specs.side_effects}</div>
+                    </div>
+                    <div class="spec-item">
+                        <div class="spec-label">Price</div>
+                        <div class="spec-value" style="font-size: 1.3rem; font-weight: 600; color: #667eea;">${specs.price}</div>
+                    </div>
+                </div>
+            `;
+
+            content.innerHTML = html;
+        }
+
+        function renderComparison(comparison) {
+            const content = document.getElementById('comparison-content');
+            const prodA = comparison.product_a;
+            const prodB = comparison.product_b;
+
+            let html = `
+                <h3 style="color: #333; margin-bottom: 20px;">${comparison.title}</h3>
+                
+                <div class="comparison-grid">
+                    <div class="product-card">
+                        <div class="product-name">Product A: ${prodA.name}</div>
+                        <div class="product-detail">
+                            <span class="detail-label">Concentration:</span> ${prodA.concentration}
+                        </div>
+                        <div class="product-detail">
+                            <span class="detail-label">Skin Type:</span> ${prodA.skin_type}
+                        </div>
+                        <div class="product-detail">
+                            <span class="detail-label">Ingredients:</span> ${prodA.ingredients}
+                        </div>
+                        <div class="product-detail">
+                            <span class="detail-label">Benefits:</span> ${prodA.benefits}
+                        </div>
+                        <div class="product-detail">
+                            <span class="detail-label">Price:</span> <strong>${prodA.price}</strong>
+                        </div>
+                    </div>
+
+                    <div class="product-card">
+                        <div class="product-name">Product B: ${prodB.name}</div>
+                        <div class="product-detail">
+                            <span class="detail-label">Concentration:</span> ${prodB.concentration}
+                        </div>
+                        <div class="product-detail">
+                            <span class="detail-label">Skin Type:</span> ${prodB.skin_type}
+                        </div>
+                        <div class="product-detail">
+                            <span class="detail-label">Ingredients:</span> ${prodB.ingredients}
+                        </div>
+                        <div class="product-detail">
+                            <span class="detail-label">Benefits:</span> ${prodB.benefits}
+                        </div>
+                        <div class="product-detail">
+                            <span class="detail-label">Price:</span> <strong>${prodB.price}</strong>
+                        </div>
+                    </div>
+                </div>
+
+                <h4 style="color: #667eea; margin-top: 30px; margin-bottom: 15px;">Detailed Comparison Analysis</h4>
+                <div class="comparison-analysis">${comparison.comparison_analysis}</div>
+            `;
+
+            content.innerHTML = html;
+        }
+
+        function renderQuestions(questions) {
+            const content = document.getElementById('questions-content');
+            let html = '<div class="question-list">';
+
+            questions.forEach((q, index) => {
+                html += `
+                    <div class="question-item">
+                        <div class="question-number">Question ${index + 1} - ${q.category}</div>
+                        <div class="question-text">${q.question}</div>
+                    </div>
+                `;
+            });
+
+            html += '</div>';
+            content.innerHTML = html;
+        }
+
+        function showError(message) {
+            document.querySelectorAll('.loading').forEach(el => {
+                el.innerHTML = `<div class="error">❌ ${message}</div>`;
+            });
+        }
+
+        function downloadJSON(type) {
+            if (!globalData) return;
+
+            let data, filename;
+            switch(type) {
+                case 'faq':
+                    data = globalData.faq;
+                    filename = 'faq.json';
+                    break;
+                case 'product':
+                    data = globalData.product;
+                    filename = 'product_page.json';
+                    break;
+                case 'comparison':
+                    data = globalData.comparison;
+                    filename = 'comparison_page.json';
+                    break;
+                case 'questions':
+                    data = globalData.questions;
+                    filename = 'questions.json';
+                    break;
+            }
+
+            const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = filename;
+            a.click();
+            URL.revokeObjectURL(url);
+        }
+    </script>
+</body>
+</html>
