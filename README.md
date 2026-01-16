@@ -35,7 +35,6 @@ This system implements a **true multi-agent architecture** with dynamic agent di
 
 ## Problem Statement
 
-The Kasparro challenge required designing a multi-agent system that:
 
 1. Takes minimal product data as input (only 8 fields per product)
 2. Generates structured content pages (FAQ, Product Description, Comparison)
@@ -927,13 +926,10 @@ For detailed system design, architecture diagrams, agent specifications, and imp
 ## Author
 
 **Dhanush P**  
-Applied AI Engineer Challenge - Kasparro  
-**Submission**: Resubmission addressing multi-agent architecture feedback
-
-**GitHub**: [github.com/Danny575-ui/kasparro-multi-agentic-system-dhanush-p](https://github.com/Danny575-ui/kasparro-multi-agentic-system-dhanush-p)
+**GitHub**: [github.com/Danny575-ui/multi-agentic-system](https://github.com/Danny575-ui/multi-agentic-system)
 
 ---
 
 ## License
 
-This project is created for educational and evaluation purposes as part of the Kasparro Applied AI Engineer assignment.
+This project is created for educational and evaluation purposes .
